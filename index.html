@@ -1,0 +1,1751 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Product Growth Lab Product Growth Loop Visual Prototype</title>
+  <style>
+    :root {
+      --ink: #18221f;
+      --muted: #5d6965;
+      --line: #d8dfdc;
+      --paper: #fbfcfa;
+      --surface: #ffffff;
+      --soft: #eef4f0;
+      --green: #1f7a5c;
+      --green-soft: #dff1e8;
+      --blue: #2f65b0;
+      --blue-soft: #e6eefb;
+      --coral: #c64d3b;
+      --coral-soft: #fae8e3;
+      --amber: #b47a16;
+      --amber-soft: #fff2d7;
+      --violet: #7552a3;
+      --violet-soft: #efe8f7;
+      --shadow: 0 18px 46px rgba(24, 34, 31, 0.10);
+      --radius: 8px;
+      --mono: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
+      --sans: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", "Microsoft YaHei", sans-serif;
+    }
+
+    * { box-sizing: border-box; }
+
+    html {
+      scroll-behavior: smooth;
+      background: var(--paper);
+      color: var(--ink);
+    }
+
+    body {
+      margin: 0;
+      font-family: var(--sans);
+      line-height: 1.5;
+      letter-spacing: 0;
+    }
+
+    button,
+    input,
+    select {
+      font: inherit;
+    }
+
+    .app-shell {
+      min-height: 100vh;
+      display: grid;
+      grid-template-columns: 280px minmax(0, 1fr);
+    }
+
+    aside {
+      position: sticky;
+      top: 0;
+      height: 100vh;
+      border-right: 1px solid var(--line);
+      background: #f6f8f5;
+      padding: 22px 18px;
+      overflow-y: auto;
+    }
+
+    .brand-lockup {
+      display: grid;
+      gap: 12px;
+      margin-bottom: 24px;
+    }
+
+    .mark {
+      width: 46px;
+      height: 46px;
+      border: 2px solid var(--ink);
+      display: grid;
+      place-items: center;
+      font-weight: 800;
+      background: var(--surface);
+      box-shadow: 5px 5px 0 var(--green-soft);
+    }
+
+    .brand-lockup h1 {
+      font-size: 18px;
+      line-height: 1.18;
+      margin: 0;
+    }
+
+    .brand-lockup p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    nav {
+      display: grid;
+      gap: 8px;
+    }
+
+    nav a {
+      color: var(--ink);
+      text-decoration: none;
+      border: 1px solid transparent;
+      border-radius: var(--radius);
+      padding: 9px 10px;
+      font-size: 14px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    nav a:hover,
+    nav a.active {
+      background: var(--surface);
+      border-color: var(--line);
+    }
+
+    .nav-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 999px;
+      background: var(--green);
+      flex: 0 0 auto;
+    }
+
+    nav a:nth-child(2) .nav-dot { background: var(--blue); }
+    nav a:nth-child(3) .nav-dot { background: var(--coral); }
+    nav a:nth-child(4) .nav-dot { background: var(--amber); }
+    nav a:nth-child(5) .nav-dot { background: var(--violet); }
+    nav a:nth-child(6) .nav-dot { background: #41514b; }
+
+    .side-note {
+      margin-top: 24px;
+      padding: 13px;
+      border: 1px dashed #b9c3bf;
+      border-radius: var(--radius);
+      color: var(--muted);
+      font-size: 13px;
+      background: rgba(255, 255, 255, 0.52);
+    }
+
+    main {
+      min-width: 0;
+    }
+
+    section {
+      padding: 44px clamp(18px, 5vw, 64px);
+      border-bottom: 1px solid var(--line);
+    }
+
+    .workspace {
+      padding-top: 28px;
+      min-height: 100vh;
+      background:
+        linear-gradient(90deg, rgba(31, 122, 92, 0.06) 0 1px, transparent 1px 100%),
+        linear-gradient(0deg, rgba(47, 101, 176, 0.05) 0 1px, transparent 1px 100%);
+      background-size: 44px 44px;
+    }
+
+    .topbar {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+      margin-bottom: 22px;
+    }
+
+    .eyebrow {
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      font-weight: 800;
+      color: var(--green);
+    }
+
+    .status-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      border: 1px solid var(--line);
+      background: var(--surface);
+      border-radius: 999px;
+      padding: 7px 10px;
+      color: var(--muted);
+      font-size: 13px;
+      white-space: nowrap;
+    }
+
+    .pill strong {
+      color: var(--ink);
+      font-weight: 750;
+    }
+
+    .intro-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1.08fr) minmax(340px, 0.92fr);
+      gap: 26px;
+      align-items: stretch;
+    }
+
+    .brief h2 {
+      font-size: clamp(30px, 4vw, 58px);
+      line-height: 1.02;
+      margin: 0 0 16px;
+      max-width: 980px;
+    }
+
+    .brief p {
+      max-width: 760px;
+      color: var(--muted);
+      font-size: 17px;
+      margin: 0 0 24px;
+    }
+
+    .decision-strip {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 10px;
+      margin-top: 22px;
+    }
+
+    .decision-item {
+      border: 1px solid var(--line);
+      background: var(--surface);
+      border-radius: var(--radius);
+      padding: 14px;
+      min-height: 118px;
+      box-shadow: 0 8px 26px rgba(24, 34, 31, 0.06);
+    }
+
+    .decision-item b {
+      display: block;
+      margin-bottom: 7px;
+      font-size: 15px;
+    }
+
+    .decision-item span {
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .command-panel {
+      border: 1px solid var(--line);
+      background: var(--surface);
+      border-radius: var(--radius);
+      overflow: hidden;
+      box-shadow: var(--shadow);
+      display: grid;
+      grid-template-rows: auto 1fr;
+    }
+
+    .panel-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 13px 15px;
+      border-bottom: 1px solid var(--line);
+      background: #f9fbf8;
+    }
+
+    .panel-head b {
+      font-size: 14px;
+    }
+
+    .panel-controls {
+      display: flex;
+      gap: 6px;
+    }
+
+    .fake-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: var(--line);
+    }
+
+    .fake-dot:nth-child(1) { background: var(--coral); }
+    .fake-dot:nth-child(2) { background: var(--amber); }
+    .fake-dot:nth-child(3) { background: var(--green); }
+
+    .system-picture {
+      padding: 18px;
+      min-height: 430px;
+      display: grid;
+      align-content: center;
+      background:
+        linear-gradient(135deg, rgba(238, 244, 240, 0.84), rgba(255, 255, 255, 0.95)),
+        repeating-linear-gradient(90deg, transparent 0 18px, rgba(24, 34, 31, 0.03) 18px 19px);
+    }
+
+    .system-picture svg {
+      width: 100%;
+      height: auto;
+      display: block;
+    }
+
+    .section-header {
+      display: flex;
+      justify-content: space-between;
+      gap: 24px;
+      align-items: end;
+      margin-bottom: 24px;
+    }
+
+    .section-header h2 {
+      margin: 0;
+      font-size: clamp(24px, 3vw, 38px);
+      line-height: 1.08;
+    }
+
+    .section-header p {
+      color: var(--muted);
+      margin: 0;
+      max-width: 620px;
+      font-size: 15px;
+    }
+
+    .thread-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 14px;
+    }
+
+    .thread-card {
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: var(--surface);
+      padding: 18px;
+      display: grid;
+      gap: 12px;
+      min-height: 256px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .thread-card::before {
+      content: "";
+      position: absolute;
+      inset: 0 0 auto 0;
+      height: 5px;
+      background: var(--green);
+    }
+
+    .thread-card:nth-child(2)::before { background: var(--blue); }
+    .thread-card:nth-child(3)::before { background: var(--coral); }
+
+    .thread-card h3 {
+      margin: 6px 0 0;
+      font-size: 19px;
+      line-height: 1.16;
+    }
+
+    .thread-card p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .mini-list {
+      display: grid;
+      gap: 7px;
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+
+    .mini-list li {
+      display: flex;
+      gap: 8px;
+      align-items: baseline;
+      color: var(--ink);
+      font-size: 13px;
+    }
+
+    .mini-list li::before {
+      content: "";
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: currentColor;
+      flex: 0 0 auto;
+      transform: translateY(-1px);
+      opacity: 0.55;
+    }
+
+    .tabs {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 16px;
+    }
+
+    .tab-button,
+    .icon-button {
+      border: 1px solid var(--line);
+      background: var(--surface);
+      border-radius: var(--radius);
+      padding: 9px 12px;
+      color: var(--ink);
+      cursor: pointer;
+      font-size: 14px;
+    }
+
+    .tab-button[aria-selected="true"],
+    .icon-button.active {
+      background: var(--ink);
+      color: #fff;
+      border-color: var(--ink);
+    }
+
+    .challenge-table {
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      overflow: hidden;
+      background: var(--surface);
+    }
+
+    .challenge-row {
+      display: grid;
+      grid-template-columns: 220px minmax(0, 1fr) minmax(0, 1fr);
+      border-bottom: 1px solid var(--line);
+      min-height: 98px;
+    }
+
+    .challenge-row:last-child {
+      border-bottom: 0;
+    }
+
+    .challenge-cell {
+      padding: 15px;
+      border-right: 1px solid var(--line);
+      display: grid;
+      align-content: center;
+      gap: 6px;
+    }
+
+    .challenge-cell:last-child {
+      border-right: 0;
+    }
+
+    .challenge-cell b {
+      font-size: 14px;
+    }
+
+    .challenge-cell span {
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .flow-wrap {
+      border: 1px solid var(--line);
+      background: var(--surface);
+      border-radius: var(--radius);
+      padding: 14px;
+      overflow: auto;
+      box-shadow: var(--shadow);
+    }
+
+    .flow-svg {
+      min-width: 1080px;
+      width: 100%;
+      height: auto;
+      display: block;
+    }
+
+    .node-box {
+      cursor: pointer;
+      transition: opacity .16s ease, filter .16s ease;
+    }
+
+    .node-box:hover {
+      filter: brightness(0.98);
+    }
+
+    .node-box.dimmed {
+      opacity: 0.25;
+    }
+
+    .node-detail {
+      display: grid;
+      grid-template-columns: 1.1fr 0.9fr;
+      gap: 16px;
+      margin-top: 16px;
+    }
+
+    .detail-panel,
+    .metric-panel {
+      border: 1px solid var(--line);
+      background: var(--surface);
+      border-radius: var(--radius);
+      padding: 16px;
+    }
+
+    .detail-panel h3,
+    .metric-panel h3 {
+      margin: 0 0 8px;
+      font-size: 17px;
+    }
+
+    .detail-panel p,
+    .metric-panel p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .metric-stack {
+      display: grid;
+      gap: 9px;
+      margin-top: 12px;
+    }
+
+    .metric {
+      display: grid;
+      gap: 5px;
+    }
+
+    .metric-label {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .bar {
+      height: 9px;
+      background: var(--soft);
+      border-radius: 999px;
+      overflow: hidden;
+    }
+
+    .bar i {
+      display: block;
+      height: 100%;
+      width: var(--value);
+      background: var(--green);
+      border-radius: inherit;
+    }
+
+    .gate-board {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    .gate-card {
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      min-height: 238px;
+      padding: 15px;
+      display: grid;
+      gap: 12px;
+      align-content: start;
+    }
+
+    .gate-card h3 {
+      margin: 0;
+      font-size: 16px;
+    }
+
+    .gate-card p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .gate-list {
+      display: grid;
+      gap: 7px;
+      margin: 0;
+      padding: 0;
+      list-style: none;
+      font-size: 13px;
+    }
+
+    .gate-list li {
+      display: grid;
+      grid-template-columns: 18px minmax(0, 1fr);
+      gap: 7px;
+      align-items: start;
+    }
+
+    .checkmark {
+      width: 18px;
+      height: 18px;
+      border: 1px solid var(--line);
+      display: grid;
+      place-items: center;
+      border-radius: 4px;
+      background: var(--soft);
+      color: var(--green);
+      font-size: 11px;
+      font-weight: 800;
+    }
+
+    .stage-band {
+      display: grid;
+      grid-template-columns: 240px minmax(0, 1fr);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      overflow: hidden;
+      background: var(--surface);
+    }
+
+    .stage-rail {
+      border-right: 1px solid var(--line);
+      background: #f7faf7;
+      padding: 14px;
+      display: grid;
+      gap: 8px;
+      align-content: start;
+    }
+
+    .stage-button {
+      text-align: left;
+      border: 1px solid transparent;
+      background: transparent;
+      border-radius: var(--radius);
+      padding: 10px;
+      cursor: pointer;
+      color: var(--ink);
+    }
+
+    .stage-button.active {
+      background: var(--surface);
+      border-color: var(--line);
+      box-shadow: 0 8px 18px rgba(24, 34, 31, 0.06);
+    }
+
+    .stage-button b {
+      display: block;
+      font-size: 14px;
+    }
+
+    .stage-button span {
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .stage-content {
+      padding: 20px;
+      min-height: 390px;
+      display: grid;
+      gap: 18px;
+      align-content: start;
+    }
+
+    .stage-content h3 {
+      margin: 0;
+      font-size: 24px;
+    }
+
+    .stage-content p {
+      margin: 0;
+      color: var(--muted);
+    }
+
+    .output-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 10px;
+    }
+
+    .output-tile {
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      padding: 12px;
+      background: #fcfdfb;
+      min-height: 112px;
+    }
+
+    .output-tile b {
+      display: block;
+      margin-bottom: 6px;
+      font-size: 13px;
+    }
+
+    .output-tile span {
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .agent-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    .agent-card {
+      border: 1px solid var(--line);
+      background: var(--surface);
+      border-radius: var(--radius);
+      padding: 15px;
+      min-height: 172px;
+      display: grid;
+      gap: 9px;
+    }
+
+    .agent-card h3 {
+      margin: 0;
+      font-size: 16px;
+    }
+
+    .agent-card p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .tag-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+
+    .tag {
+      font-size: 11px;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      padding: 4px 7px;
+      color: var(--muted);
+      background: #fafcf9;
+    }
+
+    .self-test {
+      display: grid;
+      grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
+      gap: 20px;
+      align-items: start;
+    }
+
+    .score-box {
+      border: 1px solid var(--line);
+      background: var(--surface);
+      border-radius: var(--radius);
+      padding: 22px;
+      position: sticky;
+      top: 18px;
+    }
+
+    .score-number {
+      font-size: 64px;
+      line-height: 1;
+      font-weight: 850;
+      margin: 10px 0;
+    }
+
+    .score-box p {
+      color: var(--muted);
+      margin: 0;
+    }
+
+    .checklist {
+      display: grid;
+      gap: 10px;
+    }
+
+    .check-row {
+      border: 1px solid var(--line);
+      background: var(--surface);
+      border-radius: var(--radius);
+      padding: 12px;
+      display: grid;
+      grid-template-columns: 28px minmax(0, 1fr);
+      gap: 10px;
+      align-items: start;
+    }
+
+    .check-row input {
+      width: 20px;
+      height: 20px;
+      margin: 1px 0 0;
+      accent-color: var(--green);
+    }
+
+    .check-row b {
+      display: block;
+      margin-bottom: 3px;
+      font-size: 14px;
+    }
+
+    .check-row span {
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .final-band {
+      background: #17221f;
+      color: #fff;
+    }
+
+    .final-band .section-header p,
+    .final-band .eyebrow {
+      color: #c9d6d1;
+    }
+
+    .final-grid {
+      display: grid;
+      grid-template-columns: 1.05fr 0.95fr;
+      gap: 18px;
+      align-items: stretch;
+    }
+
+    .final-panel {
+      border: 1px solid rgba(255,255,255,0.18);
+      border-radius: var(--radius);
+      padding: 18px;
+      background: rgba(255,255,255,0.06);
+    }
+
+    .final-panel h3 {
+      margin: 0 0 9px;
+    }
+
+    .final-panel p,
+    .final-panel li {
+      color: #d7e2de;
+      font-size: 14px;
+    }
+
+    .final-panel ul {
+      margin: 0;
+      padding-left: 18px;
+    }
+
+    .code-like {
+      font-family: var(--mono);
+      font-size: 12px;
+      white-space: pre-wrap;
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.14);
+      border-radius: var(--radius);
+      padding: 12px;
+      color: #eff7f3;
+    }
+
+    .hidden {
+      display: none !important;
+    }
+
+    @media (max-width: 1120px) {
+      .app-shell {
+        grid-template-columns: 1fr;
+      }
+
+      aside {
+        position: static;
+        height: auto;
+        border-right: 0;
+        border-bottom: 1px solid var(--line);
+      }
+
+      nav {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+      }
+
+      .intro-grid,
+      .node-detail,
+      .self-test,
+      .final-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .thread-grid,
+      .gate-board,
+      .agent-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .stage-band {
+        grid-template-columns: 1fr;
+      }
+
+      .stage-rail {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        border-right: 0;
+        border-bottom: 1px solid var(--line);
+      }
+    }
+
+    @media (max-width: 720px) {
+      section {
+        padding: 34px 16px;
+      }
+
+      nav,
+      .decision-strip,
+      .thread-grid,
+      .gate-board,
+      .agent-grid,
+      .output-grid,
+      .stage-rail {
+        grid-template-columns: 1fr;
+      }
+
+      .challenge-row {
+        grid-template-columns: 1fr;
+      }
+
+      .challenge-cell {
+        border-right: 0;
+        border-bottom: 1px solid var(--line);
+      }
+
+      .challenge-cell:last-child {
+        border-bottom: 0;
+      }
+
+      .brief h2 {
+        font-size: 34px;
+      }
+
+      .system-picture {
+        min-height: 300px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="app-shell">
+    <aside>
+      <div class="brand-lockup">
+        <div class="mark">PG</div>
+        <div>
+          <h1>Product Growth Loop</h1>
+          <p>三线程整合后的 Web 原型</p>
+        </div>
+      </div>
+      <nav aria-label="Page navigation">
+        <a class="active" href="#dashboard"><span class="nav-dot"></span>总览控制台</a>
+        <a href="#sources"><span class="nav-dot"></span>三个来源线程</a>
+        <a href="#challenge"><span class="nav-dot"></span>互相 Challenge</a>
+        <a href="#architecture"><span class="nav-dot"></span>Agent 流程图</a>
+        <a href="#gates"><span class="nav-dot"></span>Gate 工作台</a>
+        <a href="#mvp"><span class="nav-dot"></span>MVP 与自测</a>
+      </nav>
+      <div class="side-note">
+        这是一个公开演示原型：用于判断系统方向是否对，不包含真实平台账户、交易数据、单位经济模型、广告标识或外部敏感数据。
+      </div>
+    </aside>
+
+    <main>
+      <section class="workspace" id="dashboard">
+        <div class="topbar">
+          <div>
+            <div class="eyebrow">Prototype / Readable System Map</div>
+          </div>
+          <div class="status-row">
+            <span class="pill"><strong>3</strong> threads integrated</span>
+            <span class="pill"><strong>11</strong> agents</span>
+            <span class="pill"><strong>8</strong> gates</span>
+            <span class="pill"><strong>1</strong> MVP slice</span>
+          </div>
+        </div>
+
+        <div class="intro-grid">
+          <div class="brief">
+            <h2>不是更多 SOP，而是一个会拦截错误的商品增长回路。</h2>
+            <p>
+              这张 Web 原型把三条对话压缩成一个可视化系统：前台增长负责需求、内容和广告；后台商品负责供应、尺码和定价；Loop 方法论负责 Gate、日志、指标和规则更新。
+            </p>
+            <div class="decision-strip">
+              <div class="decision-item">
+                <b>核心对象</b>
+                <span>ProductCandidate，不是单个 SKU，也不是单条关键词。</span>
+              </div>
+              <div class="decision-item">
+                <b>核心机制</b>
+                <span>每一步都有 Gate，没过就不允许进入下一步。</span>
+              </div>
+              <div class="decision-item">
+                <b>核心目标</b>
+                <span>让 AI 判断哪些商品值得被人认真管理。</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="command-panel" aria-label="System picture">
+            <div class="panel-head">
+              <b>Product Growth Lab Product Growth OS</b>
+              <div class="panel-controls" aria-hidden="true">
+                <span class="fake-dot"></span>
+                <span class="fake-dot"></span>
+                <span class="fake-dot"></span>
+              </div>
+            </div>
+            <div class="system-picture">
+              <svg viewBox="0 0 520 420" role="img" aria-label="Product Growth OS visual">
+                <defs>
+                  <pattern id="grid" width="22" height="22" patternUnits="userSpaceOnUse">
+                    <path d="M22 0H0V22" fill="none" stroke="#d8dfdc" stroke-width="1" opacity=".45"/>
+                  </pattern>
+                </defs>
+                <rect width="520" height="420" fill="url(#grid)" rx="8"/>
+                <rect x="36" y="34" width="176" height="92" rx="8" fill="#e6eefb" stroke="#2f65b0"/>
+                <text x="58" y="66" fill="#18221f" font-size="17" font-weight="800">Front Growth</text>
+                <text x="58" y="94" fill="#5d6965" font-size="12">Keyword / Content / Ads</text>
+                <rect x="308" y="34" width="176" height="92" rx="8" fill="#fff2d7" stroke="#b47a16"/>
+                <text x="330" y="66" fill="#18221f" font-size="17" font-weight="800">Back Office</text>
+                <text x="330" y="94" fill="#5d6965" font-size="12">Supply / Size / Price</text>
+                <rect x="140" y="164" width="240" height="104" rx="8" fill="#ffffff" stroke="#18221f" stroke-width="2"/>
+                <text x="177" y="203" fill="#18221f" font-size="20" font-weight="850">ProductCandidate</text>
+                <text x="175" y="232" fill="#5d6965" font-size="13">one opportunity object</text>
+                <path d="M212 80C252 80 254 163 254 164" fill="none" stroke="#2f65b0" stroke-width="3"/>
+                <path d="M308 80C268 80 266 163 266 164" fill="none" stroke="#b47a16" stroke-width="3"/>
+                <rect x="56" y="322" width="124" height="58" rx="8" fill="#dff1e8" stroke="#1f7a5c"/>
+                <text x="82" y="356" fill="#18221f" font-size="16" font-weight="800">Gate</text>
+                <rect x="198" y="322" width="124" height="58" rx="8" fill="#fae8e3" stroke="#c64d3b"/>
+                <text x="229" y="356" fill="#18221f" font-size="16" font-weight="800">Log</text>
+                <rect x="340" y="322" width="124" height="58" rx="8" fill="#efe8f7" stroke="#7552a3"/>
+                <text x="365" y="356" fill="#18221f" font-size="16" font-weight="800">Metric</text>
+                <path d="M210 268L142 322" fill="none" stroke="#1f7a5c" stroke-width="3"/>
+                <path d="M260 268V322" fill="none" stroke="#c64d3b" stroke-width="3"/>
+                <path d="M310 268L378 322" fill="none" stroke="#7552a3" stroke-width="3"/>
+                <path d="M118 322C106 264 114 206 140 170" fill="none" stroke="#1f7a5c" stroke-width="2" stroke-dasharray="7 7"/>
+                <path d="M402 322C414 264 406 206 380 170" fill="none" stroke="#7552a3" stroke-width="2" stroke-dasharray="7 7"/>
+              </svg>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="sources">
+        <div class="section-header">
+          <div>
+            <div class="eyebrow">Source Threads</div>
+            <h2>三条对话不是重复，而是三层系统。</h2>
+          </div>
+          <p>第一条负责增长动作，第二条负责商品经营，第三条负责让系统变成可持续迭代的 loop。</p>
+        </div>
+
+        <div class="thread-grid">
+          <article class="thread-card">
+            <h3>搭建选品投放协同系统</h3>
+            <p>前台增长闭环：把关键词洞察、Collection、内容、Feed 和广告 Brief 串起来。</p>
+            <ul class="mini-list">
+              <li>KeywordCluster</li>
+              <li>CollectionUnit</li>
+              <li>ContentPackage / FeedPackage</li>
+              <li>CampaignBrief / LaunchChecklist</li>
+            </ul>
+          </article>
+
+          <article class="thread-card">
+            <h3>建立深度研究项目</h3>
+            <p>后台商品经营闭环：补上供应链、尺码、采购源、定价和商品维护优先级。</p>
+            <ul class="mini-list">
+              <li>Supply Confidence</li>
+              <li>Size Coverage</li>
+              <li>Pricing Role</li>
+              <li>Product Growth OS</li>
+            </ul>
+          </article>
+
+          <article class="thread-card">
+            <h3>解释 loop 含义</h3>
+            <p>系统治理层：让流程有 Gate、Schema、Log、Metric、回测和 Playbook 更新。</p>
+            <ul class="mini-list">
+              <li>Gate / 门控</li>
+              <li>Log / 证据记录</li>
+              <li>Metric / 评估指标</li>
+              <li>Playbook Update</li>
+            </ul>
+          </article>
+        </div>
+      </section>
+
+      <section id="challenge">
+        <div class="section-header">
+          <div>
+            <div class="eyebrow">Mutual Challenge</div>
+            <h2>三条线程互相挑战后，系统才完整。</h2>
+          </div>
+          <p>如果只保留任何一条，都会偏：只做广告会忽视供应链，只做供应链会失去需求牵引，只做 loop 会变成抽象框架。</p>
+        </div>
+
+        <div class="tabs" role="tablist" aria-label="Challenge tabs">
+          <button class="tab-button" aria-selected="true" data-tab="growth">前台挑战后台</button>
+          <button class="tab-button" aria-selected="false" data-tab="supply">后台挑战前台</button>
+          <button class="tab-button" aria-selected="false" data-tab="loop">Loop 挑战两者</button>
+        </div>
+
+        <div class="challenge-table" data-panel="growth">
+          <div class="challenge-row">
+            <div class="challenge-cell"><b>问题</b><span>关键词机会很好，为什么不能直接投？</span></div>
+            <div class="challenge-cell"><b>挑战</b><span>如果采购源不稳、尺码只到 US 10、价格没广告空间，PMax 会把供应链问题放大。</span></div>
+            <div class="challenge-cell"><b>系统回应</b><span>在 CampaignBrief 前加入 Supply Gate、Size Gate、Margin Gate。</span></div>
+          </div>
+          <div class="challenge-row">
+            <div class="challenge-cell"><b>问题</b><span>内容和 Feed 已经生成，为什么还要 ProductFact？</span></div>
+            <div class="challenge-cell"><b>挑战</b><span>没有事实层，AI 会把供给侧标题、图片感觉和广告卖点混在一起。</span></div>
+            <div class="challenge-cell"><b>系统回应</b><span>所有 PDP、SEO、Product Feed、Social brief 都只能从 ProductFact 派生。</span></div>
+          </div>
+        </div>
+
+        <div class="challenge-table hidden" data-panel="supply">
+          <div class="challenge-row">
+            <div class="challenge-cell"><b>问题</b><span>供应稳定就值得维护吗？</span></div>
+            <div class="challenge-cell"><b>挑战</b><span>如果没有 KeywordCluster 和 Collection Intent，稳定供应也只是库存，不是增长机会。</span></div>
+            <div class="challenge-cell"><b>系统回应</b><span>ProductCandidate 必须绑定需求、页面角色和渠道角色。</span></div>
+          </div>
+          <div class="challenge-row">
+            <div class="challenge-cell"><b>问题</b><span>尺码窄的款是不是都要淘汰？</span></div>
+            <div class="challenge-cell"><b>挑战</b><span>它可能适合 product mix、SEO、lookbook 或 petite/slim fit，但不适合 PMax Hero。</span></div>
+            <div class="challenge-cell"><b>系统回应</b><span>建立 Channel Role，而不是简单 Yes/No。</span></div>
+          </div>
+        </div>
+
+        <div class="challenge-table hidden" data-panel="loop">
+          <div class="challenge-row">
+            <div class="challenge-cell"><b>问题</b><span>为什么 SOP 还不够？</span></div>
+            <div class="challenge-cell"><b>挑战</b><span>SOP 只能告诉人怎么做；Gate 可以阻断错误进入下一步。</span></div>
+            <div class="challenge-cell"><b>系统回应</b><span>每个 Agent 输出都必须有 pass / hold / reject / revise。</span></div>
+          </div>
+          <div class="challenge-row">
+            <div class="challenge-cell"><b>问题</b><span>为什么需要 Log 和 Metric？</span></div>
+            <div class="challenge-cell"><b>挑战</b><span>没有日志就无法解释决策；没有指标就无法知道规则长期是否有效。</span></div>
+            <div class="challenge-cell"><b>系统回应</b><span>把每次 Gate 判断回写 ExperimentRun 和 Playbook。</span></div>
+          </div>
+        </div>
+      </section>
+
+      <section id="architecture">
+        <div class="section-header">
+          <div>
+            <div class="eyebrow">Agent Architecture</div>
+            <h2>一个商品从机会到复盘的完整路径。</h2>
+          </div>
+          <p>点选流程图里的节点，会在下方看到这个节点的职责、输入、输出和当前 MVP 优先级。</p>
+        </div>
+
+        <div class="flow-wrap">
+          <svg class="flow-svg" viewBox="0 0 1240 740" role="img" aria-label="Agent architecture flow">
+            <defs>
+              <marker id="arrow" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto">
+                <path d="M0,0 L0,6 L9,3 z" fill="#5d6965"></path>
+              </marker>
+            </defs>
+            <rect x="0" y="0" width="1240" height="740" fill="#fbfcfa"/>
+
+            <g stroke="#5d6965" stroke-width="2" fill="none" marker-end="url(#arrow)">
+              <path d="M186 90H276"/>
+              <path d="M424 90H514"/>
+              <path d="M662 90H752"/>
+              <path d="M900 90H990"/>
+              <path d="M1098 138V210H1002"/>
+              <path d="M850 240H760"/>
+              <path d="M612 240H522"/>
+              <path d="M374 240H284"/>
+              <path d="M136 288V372"/>
+              <path d="M186 414H276"/>
+              <path d="M424 414H514"/>
+              <path d="M662 414H752"/>
+              <path d="M900 414H990"/>
+              <path d="M1098 462V548H990"/>
+              <path d="M842 578H752"/>
+              <path d="M604 578H514"/>
+              <path d="M366 578H276"/>
+              <path d="M136 548V470"/>
+            </g>
+
+            <g class="node-box" data-node="KeywordCluster">
+              <rect x="38" y="42" width="148" height="96" rx="8" fill="#e6eefb" stroke="#2f65b0"/>
+              <text x="58" y="78" font-size="16" font-weight="800" fill="#18221f">KeywordCluster</text>
+              <text x="58" y="104" font-size="12" fill="#5d6965">需求与意图</text>
+            </g>
+            <g class="node-box" data-node="Demand Gate">
+              <rect x="276" y="42" width="148" height="96" rx="8" fill="#dff1e8" stroke="#1f7a5c"/>
+              <text x="307" y="78" font-size="16" font-weight="800" fill="#18221f">Demand Gate</text>
+              <text x="310" y="104" font-size="12" fill="#5d6965">是否值得做</text>
+            </g>
+            <g class="node-box" data-node="ProductCandidate">
+              <rect x="514" y="42" width="148" height="96" rx="8" fill="#fff" stroke="#18221f" stroke-width="2"/>
+              <text x="537" y="78" font-size="16" font-weight="800" fill="#18221f">ProductCandidate</text>
+              <text x="552" y="104" font-size="12" fill="#5d6965">候选商品机会</text>
+            </g>
+            <g class="node-box" data-node="Supply Gate">
+              <rect x="752" y="42" width="148" height="96" rx="8" fill="#fff2d7" stroke="#b47a16"/>
+              <text x="787" y="78" font-size="16" font-weight="800" fill="#18221f">Supply Gate</text>
+              <text x="786" y="104" font-size="12" fill="#5d6965">能不能供应</text>
+            </g>
+            <g class="node-box" data-node="Size Gate">
+              <rect x="990" y="42" width="148" height="96" rx="8" fill="#fae8e3" stroke="#c64d3b"/>
+              <text x="1035" y="78" font-size="16" font-weight="800" fill="#18221f">Size Gate</text>
+              <text x="1022" y="104" font-size="12" fill="#5d6965">能不能成交</text>
+            </g>
+            <g class="node-box" data-node="Pricing Role">
+              <rect x="850" y="192" width="152" height="96" rx="8" fill="#efe8f7" stroke="#7552a3"/>
+              <text x="888" y="228" font-size="16" font-weight="800" fill="#18221f">Pricing Role</text>
+              <text x="886" y="254" font-size="12" fill="#5d6965">渠道定价角色</text>
+            </g>
+            <g class="node-box" data-node="Channel Gate">
+              <rect x="612" y="192" width="148" height="96" rx="8" fill="#dff1e8" stroke="#1f7a5c"/>
+              <text x="646" y="228" font-size="16" font-weight="800" fill="#18221f">Channel Gate</text>
+              <text x="645" y="254" font-size="12" fill="#5d6965">投放资格</text>
+            </g>
+            <g class="node-box" data-node="ProductFact">
+              <rect x="374" y="192" width="148" height="96" rx="8" fill="#ffffff" stroke="#18221f"/>
+              <text x="406" y="228" font-size="16" font-weight="800" fill="#18221f">ProductFact</text>
+              <text x="402" y="254" font-size="12" fill="#5d6965">结构化事实</text>
+            </g>
+            <g class="node-box" data-node="CollectionUnit">
+              <rect x="136" y="192" width="148" height="96" rx="8" fill="#e6eefb" stroke="#2f65b0"/>
+              <text x="170" y="228" font-size="16" font-weight="800" fill="#18221f">CollectionUnit</text>
+              <text x="168" y="254" font-size="12" fill="#5d6965">页面与意图</text>
+            </g>
+            <g class="node-box" data-node="Content Feed">
+              <rect x="38" y="374" width="148" height="96" rx="8" fill="#ffffff" stroke="#18221f"/>
+              <text x="62" y="410" font-size="16" font-weight="800" fill="#18221f">Content + Feed</text>
+              <text x="60" y="436" font-size="12" fill="#5d6965">PDP / SEO / Product Feed</text>
+            </g>
+            <g class="node-box" data-node="PDP Feed Gate">
+              <rect x="276" y="374" width="148" height="96" rx="8" fill="#dff1e8" stroke="#1f7a5c"/>
+              <text x="310" y="410" font-size="16" font-weight="800" fill="#18221f">PDP Gate</text>
+              <text x="304" y="436" font-size="12" fill="#5d6965">页面与 Feed 一致</text>
+            </g>
+            <g class="node-box" data-node="CampaignBrief">
+              <rect x="514" y="374" width="148" height="96" rx="8" fill="#e6eefb" stroke="#2f65b0"/>
+              <text x="548" y="410" font-size="16" font-weight="800" fill="#18221f">CampaignBrief</text>
+              <text x="548" y="436" font-size="12" fill="#5d6965">广告执行包</text>
+            </g>
+            <g class="node-box" data-node="Launch Gate">
+              <rect x="752" y="374" width="148" height="96" rx="8" fill="#dff1e8" stroke="#1f7a5c"/>
+              <text x="790" y="410" font-size="16" font-weight="800" fill="#18221f">Launch Gate</text>
+              <text x="787" y="436" font-size="12" fill="#5d6965">准许上线</text>
+            </g>
+            <g class="node-box" data-node="Review Card">
+              <rect x="990" y="374" width="148" height="96" rx="8" fill="#fff2d7" stroke="#b47a16"/>
+              <text x="1030" y="410" font-size="16" font-weight="800" fill="#18221f">Review Card</text>
+              <text x="1023" y="436" font-size="12" fill="#5d6965">Founder / Co-founder</text>
+            </g>
+            <g class="node-box" data-node="Manual Publish">
+              <rect x="842" y="530" width="148" height="96" rx="8" fill="#ffffff" stroke="#18221f"/>
+              <text x="875" y="566" font-size="16" font-weight="800" fill="#18221f">Manual Publish</text>
+              <text x="871" y="592" font-size="12" fill="#5d6965">Commerce CMS / Product Feed / Ads</text>
+            </g>
+            <g class="node-box" data-node="ExperimentRun">
+              <rect x="604" y="530" width="148" height="96" rx="8" fill="#fae8e3" stroke="#c64d3b"/>
+              <text x="638" y="566" font-size="16" font-weight="800" fill="#18221f">ExperimentRun</text>
+              <text x="642" y="592" font-size="12" fill="#5d6965">表现与风险回写</text>
+            </g>
+            <g class="node-box" data-node="Scale Kill Gate">
+              <rect x="366" y="530" width="148" height="96" rx="8" fill="#dff1e8" stroke="#1f7a5c"/>
+              <text x="402" y="566" font-size="16" font-weight="800" fill="#18221f">Scale / Kill</text>
+              <text x="404" y="592" font-size="12" fill="#5d6965">放量/暂停/换源</text>
+            </g>
+            <g class="node-box" data-node="Playbook Update">
+              <rect x="128" y="530" width="148" height="96" rx="8" fill="#efe8f7" stroke="#7552a3"/>
+              <text x="163" y="566" font-size="16" font-weight="800" fill="#18221f">Playbook</text>
+              <text x="151" y="592" font-size="12" fill="#5d6965">规则沉淀与更新</text>
+            </g>
+          </svg>
+        </div>
+
+        <div class="node-detail">
+          <div class="detail-panel">
+            <h3 id="nodeTitle">ProductCandidate</h3>
+            <p id="nodeBody">这是系统的中心对象：一个商品是否值得进入经营，不只看 SKU，而要同时绑定需求、供应、尺码、价格、内容和渠道角色。</p>
+          </div>
+          <div class="metric-panel">
+            <h3>当前 MVP 优先级</h3>
+            <p id="nodeSocial Ads">先做成可人工复核的决策卡，不直接自动发布。</p>
+            <div class="metric-stack">
+              <div class="metric">
+                <div class="metric-label"><span>业务价值</span><span id="valueBusiness">92</span></div>
+                <div class="bar"><i id="barBusiness" style="--value: 92%"></i></div>
+              </div>
+              <div class="metric">
+                <div class="metric-label"><span>首版可落地性</span><span id="valueFeasible">78</span></div>
+                <div class="bar"><i id="barFeasible" style="--value: 78%; background: var(--blue)"></i></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="gates">
+        <div class="section-header">
+          <div>
+            <div class="eyebrow">Gate Cockpit</div>
+            <h2>真正让系统稳定的，不是建议，而是拦截。</h2>
+          </div>
+          <p>每个 Gate 都要能输出 pass、hold、reject、revise；并记录为什么过、为什么没过。</p>
+        </div>
+
+        <div class="gate-board">
+          <article class="gate-card">
+            <h3>Demand Gate</h3>
+            <p>判断是否存在值得做的需求机会。</p>
+            <ul class="gate-list">
+              <li><span class="checkmark">✓</span><span>KeywordCluster 有清楚 intent</span></li>
+              <li><span class="checkmark">✓</span><span>Collection 能承接该需求</span></li>
+              <li><span class="checkmark">✓</span><span>不是单纯为了上新而上新</span></li>
+            </ul>
+          </article>
+          <article class="gate-card">
+            <h3>Supply Gate</h3>
+            <p>判断供应链能不能承接广告带来的需求。</p>
+            <ul class="gate-list">
+              <li><span class="checkmark">✓</span><span>主来源链接有效</span></li>
+              <li><span class="checkmark">✓</span><span>至少有备用采购路径</span></li>
+              <li><span class="checkmark">✓</span><span>价格与规格未明显漂移</span></li>
+            </ul>
+          </article>
+          <article class="gate-card">
+            <h3>Size Gate</h3>
+            <p>判断尺码是否能承担对应渠道角色。</p>
+            <ul class="gate-list">
+              <li><span class="checkmark">✓</span><span>美码映射明确</span></li>
+              <li><span class="checkmark">✓</span><span>最大码不足时降级渠道角色</span></li>
+              <li><span class="checkmark">✓</span><span>前台展示不误导用户</span></li>
+            </ul>
+          </article>
+          <article class="gate-card">
+            <h3>Launch Gate</h3>
+            <p>上线前最后阻断错误进入广告系统。</p>
+            <ul class="gate-list">
+              <li><span class="checkmark">✓</span><span>PDP / Feed / 广告 URL 一致</span></li>
+              <li><span class="checkmark">✓</span><span>价格角色与渠道一致</span></li>
+              <li><span class="checkmark">✓</span><span>Review Card 已审批</span></li>
+            </ul>
+          </article>
+        </div>
+      </section>
+
+      <section id="mvp">
+        <div class="section-header">
+          <div>
+            <div class="eyebrow">MVP Path</div>
+            <h2>第一版不要做大系统，先做一个能跑通的垂直切片。</h2>
+          </div>
+          <p>范围建议沿用 7 天单品单 Collection vertical slice，但补上供应、尺码、定价和 Gate 结果。</p>
+        </div>
+
+        <div class="stage-band">
+          <div class="stage-rail" aria-label="MVP stage selector">
+            <button class="stage-button active" data-stage="one">
+              <b>01 输入冻结</b>
+              <span>产品、关键词、供应、尺码</span>
+            </button>
+            <button class="stage-button" data-stage="two">
+              <b>02 Gate 检查</b>
+              <span>需求、供应、尺码、价格</span>
+            </button>
+            <button class="stage-button" data-stage="three">
+              <b>03 生成执行包</b>
+              <span>内容、Feed、广告、任务</span>
+            </button>
+            <button class="stage-button" data-stage="four">
+              <b>04 复盘回写</b>
+              <span>24h / 72h / 7d</span>
+            </button>
+          </div>
+
+          <div class="stage-content">
+            <h3 id="stageTitle">01 输入冻结</h3>
+            <p id="stageIntro">先冻结一个真实产品和一个 Collection，不追求批量。输入必须包含来源链接、尺码图、价格输入、Keyword Tool 数据、产品图片和目标 Collection。</p>
+            <div class="output-grid" id="stageOutputs">
+              <div class="output-tile"><b>ProductCandidate</b><span>候选商品机会对象。</span></div>
+              <div class="output-tile"><b>SupplierSource</b><span>主采购源和备用源。</span></div>
+              <div class="output-tile"><b>SizeProfile</b><span>国内码到美码的映射。</span></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="section-header" style="margin-top: 34px">
+          <div>
+            <div class="eyebrow">Agent Team</div>
+            <h2>这些 Agent 不需要一开始全自治。</h2>
+          </div>
+          <p>第一版更像半自动工作流：AI 生成判断和任务包，人做审批与发布。</p>
+        </div>
+
+        <div class="agent-grid">
+          <article class="agent-card">
+            <h3>Product Intake Agent</h3>
+            <p>把来源链接、图片、尺码、单位经济模型和目标 Collection 整理成 ProductCandidate。</p>
+            <div class="tag-row"><span class="tag">CSV input</span><span class="tag">low risk</span><span class="tag">MVP first</span></div>
+          </article>
+          <article class="agent-card">
+            <h3>Supply Risk Agent</h3>
+            <p>检查来源链接状态、备用源、价格漂移和断货风险，输出异常队列。</p>
+            <div class="tag-row"><span class="tag">source link</span><span class="tag">alert</span><span class="tag">manual review</span></div>
+          </article>
+          <article class="agent-card">
+            <h3>Size Fit Agent</h3>
+            <p>把淘宝/国内简易码转换成美码等效，并决定是否能进入 PMax Hero。</p>
+            <div class="tag-row"><span class="tag">US sizing</span><span class="tag">risk score</span><span class="tag">truth layer</span></div>
+          </article>
+          <article class="agent-card">
+            <h3>Content Feed Agent</h3>
+            <p>从 ProductFact 派生 PDP、SEO、Product Feed、Social 素材 Brief，减少口径冲突。</p>
+            <div class="tag-row"><span class="tag">ProductFact</span><span class="tag">metafield</span><span class="tag">feed</span></div>
+          </article>
+          <article class="agent-card">
+            <h3>CampaignBrief Agent</h3>
+            <p>根据渠道角色输出 PMax、Search、Social Ads 或 SEO 的执行建议。</p>
+            <div class="tag-row"><span class="tag">PMax</span><span class="tag">Social Ads</span><span class="tag">SEO</span></div>
+          </article>
+          <article class="agent-card">
+            <h3>Playbook Agent</h3>
+            <p>把复盘结果沉淀成新规则，而不是让经验停留在聊天或人的记忆里。</p>
+            <div class="tag-row"><span class="tag">log</span><span class="tag">metric</span><span class="tag">loop</span></div>
+          </article>
+        </div>
+      </section>
+
+      <section>
+        <div class="section-header">
+          <div>
+            <div class="eyebrow">Reality Check</div>
+            <h2>用这张自测卡判断它是不是你要的东西。</h2>
+          </div>
+          <p>如果这些项大多成立，这个方向就值得继续做成正式原型；如果不成立，说明还要收窄范围。</p>
+        </div>
+
+        <div class="self-test">
+          <div class="score-box">
+            <div class="eyebrow">Fit Score</div>
+            <div class="score-number" id="fitScore">0%</div>
+            <p id="fitText">勾选右侧项目后，这里会显示这个方案和你当前需求的贴合度。</p>
+          </div>
+          <div class="checklist">
+            <label class="check-row">
+              <input type="checkbox" data-fit-check>
+              <span><b>它把选品、供应链、尺码、定价和广告放在同一条链里。</b><span>不是只做广告优化，也不是只做采购巡检。</span></span>
+            </label>
+            <label class="check-row">
+              <input type="checkbox" data-fit-check>
+              <span><b>它能解释为什么某个商品不能进入 PMax 主推。</b><span>例如尺码只到 US 10、供应不稳、价格没空间。</span></span>
+            </label>
+            <label class="check-row">
+              <input type="checkbox" data-fit-check>
+              <span><b>它能让商品组只处理异常和高价值商品。</b><span>AI 先排序，人工不再全量巡逻。</span></span>
+            </label>
+            <label class="check-row">
+              <input type="checkbox" data-fit-check>
+              <span><b>它能把内容、Feed 和广告 Brief 都绑定 ProductFact。</b><span>避免 AI 文案、Product Feed 标题、PDP 卖点互相打架。</span></span>
+            </label>
+            <label class="check-row">
+              <input type="checkbox" data-fit-check>
+              <span><b>它能沉淀成规则，而不是一次性的聊天建议。</b><span>Gate、Log、Metric、Playbook Update 是系统化的关键。</span></span>
+            </label>
+          </div>
+        </div>
+      </section>
+
+      <section class="final-band">
+        <div class="section-header">
+          <div>
+            <div class="eyebrow">Working Conclusion</div>
+            <h2>这不是最终系统，但它是一个可落地的方向。</h2>
+          </div>
+          <p>建议下一步把这个 HTML 里的结构转成一个真实 MVP：先用 CSV/导入导出跑一个产品，再决定是否做 Web 工作台。</p>
+        </div>
+
+        <div class="final-grid">
+          <div class="final-panel">
+            <h3>应该先做</h3>
+            <ul>
+              <li>一个产品 + 一个 Collection 的完整决策卡。</li>
+              <li>Supply Gate、Size Gate、PDP/Feed Gate、Launch Gate。</li>
+              <li>ProductCandidate、ProductFact、CampaignBrief 三个核心对象。</li>
+              <li>人工发布，AI 先负责判断、出包和异常提示。</li>
+            </ul>
+          </div>
+          <div class="final-panel">
+            <h3>暂时不要做</h3>
+            <ul>
+              <li>不要一开始接ERP System、Commerce CMS、Product Feed、Ads 全量 API。</li>
+              <li>不要让 AI 自动改广告或自动下架。</li>
+              <li>不要直接覆盖几千个 SKU。</li>
+              <li>不要把敏感经营数据、供给侧、平台标识 放进外部研究镜像。</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="final-panel" style="margin-top: 18px">
+          <h3>一句话版本</h3>
+          <div class="code-like">Product Growth Lab 需要的是一个 AI Governed Product Growth Loop：
+需求机会进入系统前要过 Demand Gate；
+商品进入广告前要过 Supply / Size / Margin / PDP / Feed Gate；
+上线后通过 ExperimentRun 回写广告表现和供应风险；
+表现好的规则进入 Playbook，表现差的规则被降级或淘汰。</div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script>
+    const nodeData = {
+      "KeywordCluster": {
+        title: "KeywordCluster Agent",
+        body: "负责把 Keyword Tool、Search terms、GSC 和人工判断整理成需求对象。它不是散词表，而是带 intent、渠道适配和排除词的需求单元。",
+        meta: "MVP 中先用 CSV 导入关键词数据，并人工确认主词和 intent。",
+        business: 86,
+        feasible: 82
+      },
+      "Demand Gate": {
+        title: "Demand Gate",
+        body: "判断需求是否值得进入商品机会池。没有明确 intent、搜索需求或 Collection 承接能力，就不继续消耗选品和内容资源。",
+        meta: "第一版可以用 search volume、intent、产品匹配度和人工批准四个条件。",
+        business: 88,
+        feasible: 84
+      },
+      "ProductCandidate": {
+        title: "ProductCandidate",
+        body: "系统中心对象：一个商品机会必须同时绑定关键词、供应、尺码、价格、内容事实和渠道角色。",
+        meta: "先做成可人工复核的决策卡，不直接自动发布。",
+        business: 92,
+        feasible: 78
+      },
+      "Supply Gate": {
+        title: "Supply Gate",
+        body: "检查主来源链接、备用源、价格漂移、可复购性和断货风险。没过 Gate 的商品不能成为 PMax Hero。",
+        meta: "第一版可以先做半自动巡检和人工复核队列。",
+        business: 96,
+        feasible: 66
+      },
+      "Size Gate": {
+        title: "Size Gate",
+        body: "把国内简易码映射成美码，并判断尺码覆盖是否足以承接美国市场流量。尺码窄的款可保留 product mix，但要降级广告角色。",
+        meta: "先用规则表和 Size Coverage Score，不需要一开始做复杂模型。",
+        business: 90,
+        feasible: 76
+      },
+      "Pricing Role": {
+        title: "Pricing Role Agent",
+        body: "区分 Google/PMax 获客款、Social Ads Premium 款、SEO 长尾款和 Product Mix 款。不同角色不应该使用同一套定价逻辑。",
+        meta: "可以沿用已有价格矩阵，加入 channel_role 字段。",
+        business: 88,
+        feasible: 72
+      },
+      "Channel Gate": {
+        title: "Channel Gate",
+        body: "决定一个商品是否适合 PMax、Search、Social Ads、SEO、Email 或 Product Mix。它把广告预算资格前置。",
+        meta: "第一版输出 allow / limited / exclude，而不是自动改广告账户。",
+        business: 89,
+        feasible: 80
+      },
+      "ProductFact": {
+        title: "ProductFact Agent",
+        body: "把面料、版型、尺码、厚薄、弹力、透明度、护理、身形适配等变成结构化事实，避免内容与 Feed 胡写。",
+        meta: "MVP 中可用人工确认字段 + AI 初步提取。",
+        business: 94,
+        feasible: 86
+      },
+      "CollectionUnit": {
+        title: "CollectionUnit Agent",
+        body: "定义 Collection 是 SEO、PMax、Social Ads story、navigation 还是 merchandising 用途，避免一个页面被不同渠道误用。",
+        meta: "先为一个样本 Collection 建立 intent card。",
+        business: 84,
+        feasible: 78
+      },
+      "Content Feed": {
+        title: "Content + Feed Agent",
+        body: "从 ProductFact 和 CollectionUnit 派生 PDP、SEO Title、Product Feed Title、Social brief 和 custom labels。",
+        meta: "已有 7 天 MVP 生成器可作为起点。",
+        business: 91,
+        feasible: 84
+      },
+      "PDP Feed Gate": {
+        title: "PDP & Feed Gate",
+        body: "检查 PDP、Feed、价格、库存、尺码、URL 是否一致。这个 Gate 直接降低 Redirect 和落地页错配风险。",
+        meta: "先用检查清单和导出字段对比，之后再 API 化。",
+        business: 95,
+        feasible: 70
+      },
+      "CampaignBrief": {
+        title: "CampaignBrief Agent",
+        body: "给投手一个可执行广告包，说明渠道、关键词、search themes、negative seed、landing page 和预算护栏。",
+        meta: "第一版只读/建议，不自动创建广告。",
+        business: 87,
+        feasible: 86
+      },
+      "Launch Gate": {
+        title: "Launch Gate",
+        body: "最终上线前检查。没有 Review Card、没有供应确认、没有 PDP/Feed 一致性，就不能上线或投放。",
+        meta: "这是最适合先做的强 Gate。",
+        business: 93,
+        feasible: 88
+      },
+      "Review Card": {
+        title: "Founder / Co-founder Review Card",
+        body: "把大表压缩成一张经营决策卡，让 Gordon 和你能快速判断 approve、hold、reject 或 revise。",
+        meta: "第一版输出 Markdown/HTML 卡片即可。",
+        business: 86,
+        feasible: 90
+      },
+      "Manual Publish": {
+        title: "Manual Publish",
+        body: "发布仍由人完成：Commerce CMS、Product Feed、Search Ads、Social Ads、ERP System都先不自动写入。",
+        meta: "这是控制风险的关键边界。",
+        business: 78,
+        feasible: 94
+      },
+      "ExperimentRun": {
+        title: "ExperimentRun Agent",
+        body: "把广告表现、交易数据、供应风险、退货/尺码反馈合并成复盘对象，不再只看 渠道效率。",
+        meta: "先接导出的 product-level performance 和交易数据 CSV。",
+        business: 92,
+        feasible: 62
+      },
+      "Scale Kill Gate": {
+        title: "Scale / Kill / Hold Gate",
+        body: "表现好也不能直接加预算，必须同时检查库存、尺码、毛利、CVR 和供应风险。",
+        meta: "第一版输出建议动作和原因。",
+        business: 93,
+        feasible: 74
+      },
+      "Playbook Update": {
+        title: "Playbook Update Agent",
+        body: "把复盘结果变成规则更新：哪些选品门槛有效，哪些渠道角色判断错了，哪些尺码/供应规则要调整。",
+        meta: "先人工审批规则更新，后续再做自适应优化。",
+        business: 89,
+        feasible: 58
+      }
+    };
+
+    document.querySelectorAll("nav a").forEach((link) => {
+      link.addEventListener("click", () => {
+        document.querySelectorAll("nav a").forEach((item) => item.classList.remove("active"));
+        link.classList.add("active");
+      });
+    });
+
+    document.querySelectorAll(".tab-button").forEach((button) => {
+      button.addEventListener("click", () => {
+        const tab = button.dataset.tab;
+        document.querySelectorAll(".tab-button").forEach((item) => item.setAttribute("aria-selected", "false"));
+        button.setAttribute("aria-selected", "true");
+        document.querySelectorAll("[data-panel]").forEach((panel) => {
+          panel.classList.toggle("hidden", panel.dataset.panel !== tab);
+        });
+      });
+    });
+
+    const title = document.getElementById("nodeTitle");
+    const body = document.getElementById("nodeBody");
+    const meta = document.getElementById("nodeSocial Ads");
+    const businessText = document.getElementById("valueBusiness");
+    const feasibleText = document.getElementById("valueFeasible");
+    const businessBar = document.getElementById("barBusiness");
+    const feasibleBar = document.getElementById("barFeasible");
+
+    document.querySelectorAll(".node-box").forEach((node) => {
+      node.addEventListener("click", () => {
+        const name = node.dataset.node;
+        const data = nodeData[name];
+        if (!data) return;
+        title.textContent = data.title;
+        body.textContent = data.body;
+        meta.textContent = data.meta;
+        businessText.textContent = data.business;
+        feasibleText.textContent = data.feasible;
+        businessBar.style.setProperty("--value", `${data.business}%`);
+        feasibleBar.style.setProperty("--value", `${data.feasible}%`);
+        document.querySelectorAll(".node-box").forEach((item) => item.classList.add("dimmed"));
+        node.classList.remove("dimmed");
+      });
+    });
+
+    const stages = {
+      one: {
+        title: "01 输入冻结",
+        intro: "先冻结一个真实产品和一个 Collection，不追求批量。输入必须包含来源链接、尺码图、价格输入、Keyword Tool 数据、产品图片和目标 Collection。",
+        outputs: [
+          ["ProductCandidate", "候选商品机会对象。"],
+          ["SupplierSource", "主采购源和备用源。"],
+          ["SizeProfile", "国内码到美码的映射。"]
+        ]
+      },
+      two: {
+        title: "02 Gate 检查",
+        intro: "先让商品过需求、供应、尺码、价格四个 Gate。任何硬性 Gate 不通过，都不进入内容和广告执行包。",
+        outputs: [
+          ["DemandGateReport", "需求与 Collection 是否成立。"],
+          ["SupplyRiskReport", "采购源、断货、价格漂移。"],
+          ["SizeCoverageReport", "广告角色与尺码覆盖是否匹配。"]
+        ]
+      },
+      three: {
+        title: "03 生成执行包",
+        intro: "只从 ProductFact 派生对外内容，分别生成 PDP、SEO、Product Feed、Social 素材和 CampaignBrief。",
+        outputs: [
+          ["ContentPackage", "PDP、SEO、FAQ、尺码说明。"],
+          ["FeedPackage", "Product Feed title、custom labels、属性。"],
+          ["CampaignBrief", "Search/PMax/Social Ads 执行建议。"]
+        ]
+      },
+      four: {
+        title: "04 复盘回写",
+        intro: "上线后先检查链路是否正确，再看早期表现。复盘不是写总结，而是判断哪些规则进入 Playbook。",
+        outputs: [
+          ["Postlaunch24h", "页面、Feed、广告创建一致性。"],
+          ["ExperimentRun", "广告表现 + 供应风险合并记录。"],
+          ["PlaybookUpdate", "规则新增、降级或淘汰。"]
+        ]
+      }
+    };
+
+    const stageTitle = document.getElementById("stageTitle");
+    const stageIntro = document.getElementById("stageIntro");
+    const stageOutputs = document.getElementById("stageOutputs");
+
+    document.querySelectorAll(".stage-button").forEach((button) => {
+      button.addEventListener("click", () => {
+        const data = stages[button.dataset.stage];
+        document.querySelectorAll(".stage-button").forEach((item) => item.classList.remove("active"));
+        button.classList.add("active");
+        stageTitle.textContent = data.title;
+        stageIntro.textContent = data.intro;
+        stageOutputs.innerHTML = data.outputs.map(([name, desc]) => (
+          `<div class="output-tile"><b>${name}</b><span>${desc}</span></div>`
+        )).join("");
+      });
+    });
+
+    const fitChecks = Array.from(document.querySelectorAll("[data-fit-check]"));
+    const fitScore = document.getElementById("fitScore");
+    const fitText = document.getElementById("fitText");
+
+    function updateFitScore() {
+      const checked = fitChecks.filter((item) => item.checked).length;
+      const score = Math.round((checked / fitChecks.length) * 100);
+      fitScore.textContent = `${score}%`;
+      if (score >= 80) {
+        fitText.textContent = "这个方向高度贴合：下一步可以做真实 MVP 输入模板和第一张商品决策卡。";
+      } else if (score >= 40) {
+        fitText.textContent = "方向有价值，但需要收窄第一版范围，优先做 Gate 和决策卡。";
+      } else {
+        fitText.textContent = "当前还偏抽象，建议先选一个真实商品做单点验证。";
+      }
+    }
+
+    fitChecks.forEach((item) => item.addEventListener("change", updateFitScore));
+  </script>
+</body>
+</html>
